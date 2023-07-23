@@ -1,0 +1,38 @@
+#include <LiquidCrystal.h>
+#define sensorPin A0
+#define LED 13
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+int buzzer = 8;
+const int hygrometer = A0;
+int value;
+
+void setup()
+{
+	pinMode (buzzer, OUTPUT);
+	pinMode (LED, OUTPUT);
+	lcd.begin(16,2);
+	lcd.print("hello, world!);
+}
+
+void loop()
+{
+	value = analogRead(hygrometer);
+	value = constrain(value, 400, 1023);
+	value = map(value, 400, 1023, 100, 0);
+	
+	int reading = analogRead(sensorPin);
+	float voltage = reading * (5000/1024);
+	float temperature = voltage/10;
+	if (temperature >= 30)
+	{
+		digitalWrite(LED, HIGH);
+	}
+	else digitalWrite (LED, LOW);
+	
+	lcd.setCursor(0,1);
+	lcd.print("Temperature:", temperature, "\xC2\xB0", "C" );
+	lcd.setCursor(1,1);
+	lcd.print("Humidity:", value, "%");
+	delay(2000);
+}
